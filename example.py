@@ -2,6 +2,14 @@ from flask import Flask
 from bees import Bees
 
 app = Flask(__name__)
+
+@app.route("/api-list")
+def api_list():
+    from jinja2 import Environment, PackageLoader
+    env = Environment(loader=PackageLoader("resources", "."))
+    t = env.get_template("api-list.html")
+    return t.render(name = 'carlo')
+
 bees = Bees(app, "/api/v1/")
 
 @app.route("/")
