@@ -1,4 +1,6 @@
 from flask import jsonify, request, Response
+from pkg_resources import resource_string
+from jinja2 import Template
 
 try:
     from urllib.parse import urlparse
@@ -63,6 +65,14 @@ class Bees(object):
             application = "%s://%s" % (up.scheme, up.netloc)
             return Response(self.corona_lua_client(application), mimetype="text/plain")
 
+        @app.route(self.base + "sdk")
+        def sdk():
+            data = resource_string(__name__, "resources/api-list.html")
+            src = bytes.decode(data, "utf-8")
+            t = Template(src)
+            s = t.render(names = self.names)
+            return Response(s)
+            
         @self.publish("meta_clients")
         def meta_clients(i):
             o = {}
